@@ -2,319 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Valentine for Harshu ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine Surprise 💖</title>
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #ffb6c1, #ffe6f0);
-      overflow: hidden;
-      text-align: center;
-    }
-
-    /* Main Title */
-    h1 {
-      font-size: 2.5rem;
-      color: white;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
-      padding: 0 20px;
-      transition: opacity 0.8s ease;
-    }
-
-    /* Fade helper class */
-    .fade-out {
-      opacity: 0;
-    }
-
-    .buttons {
-      margin-top: 30px;
-      position: relative;
-      width: 340px;
-      height: 230px;
-    }
-
-    button {
-      padding: 15px 35px;
-      font-size: 20px;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      position: absolute;
-      transition: 0.2s ease;
-    }
-
-    #yesBtn {
-      background: #ff2e63;
-      color: white;
-      left: 70px;
-      top: 90px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      z-index: 2;
-    }
-
-    #noBtn {
-      background: white;
-      color: black;
-      left: 200px;
-      top: 90px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      z-index: 3;
-    }
-
-    #message {
-      margin-top: 40px;
-      font-size: 1.6rem;
-      color: white;
-      font-weight: bold;
-      text-shadow: 1px 1px 6px rgba(0,0,0,0.2);
-      padding: 0 20px;
-      max-width: 700px;
-    }
-
-    /* Slideshow */
-    #slideshow {
-      margin-top: 30px;
-      display: none;
-    }
-
-    #slideTitle {
-      font-size: 1.8rem;
-      color: white;
-      margin-bottom: 15px;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
-      font-weight: bold;
-      min-height: 40px;
-    }
-
-    #slideshow img {
-      width: 280px;
-      height: 280px;
-      object-fit: cover;
-      border-radius: 25px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-      animation: fade 1s ease;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    /* Floating Hearts */
-    .heart {
-      position: absolute;
-      bottom: -20px;
-      font-size: 24px;
-      animation: floatUp 6s linear infinite;
-      opacity: 0.8;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-110vh); opacity: 0; }
-    }
-
-    /* Confetti */
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      top: 0;
-      opacity: 0.9;
-      animation: fall 2.5s linear forwards;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
-  </style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <!-- Main Title -->
-  <h1 id="mainTitle">Harshu ❤️<br>Will you be my Valentine?</h1>
+  <!-- Floating Hearts -->
+  <div id="hearts"></div>
 
-  <!-- Buttons -->
-  <div class="buttons">
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Main Title -->
+    <h1 id="mainTitle">Harshu ❤️<br>Will you be my Valentine?</h1>
+
+    <!-- Buttons -->
+    <div id="buttonBox">
+      <button id="yesBtn">Yes 💘</button>
+      <button id="noBtn">No 🙈</button>
+    </div>
+
+    <!-- Message -->
+    <div id="message"></div>
+
+    <!-- Slideshow -->
+    <div id="slideshowBox">
+      <h2 id="slideTitle"></h2>
+      <img id="slideImg" src="" alt="Memories ❤️">
+    </div>
   </div>
 
-  <!-- Message -->
-  <p id="message"></p>
+  <!-- Confetti Canvas -->
+  <canvas id="confetti"></canvas>
 
-  <!-- Slideshow -->
-  <div id="slideshow">
-    <h2 id="slideTitle"></h2>
-    <img id="slideImg" src="" alt="Memories ❤️">
-  </div>
-
-  <script>
-    const mainTitle = document.getElementById("mainTitle");
-
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-    const buttonBox = document.querySelector(".buttons");
-
-    const slideshow = document.getElementById("slideshow");
-    const slideImg = document.getElementById("slideImg");
-    const slideTitle = document.getElementById("slideTitle");
-
-    let yesSize = 1;
-    let noMoves = 0;
-
-    /* 🎵 Music */
-    const music = new Audio("assets/music/love.mp3");
-    music.loop = true;
-
-    /* 📸 Photos */
-    const photos = [
-      "assets/photos/pic1.jpg",
-      "assets/photos/pic2.jpg",
-      "assets/photos/pic3.jpg",
-      "assets/photos/pic4.jpg",
-      "assets/photos/pic5.jpg",
-      "assets/photos/pic6.jpg",
-      "assets/photos/pic7.jpg",
-      "assets/photos/pic8.jpg"
-    ];
-
-    let currentSlide = 0;
-
-    /* ✨ Typing Animation */
-    function typeText(element, text, speed = 70) {
-      element.innerHTML = "";
-      let i = 0;
-
-      function typing() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(typing, speed);
-        }
-      }
-      typing();
-    }
-
-    /* 🎉 Confetti Burst */
-    function launchConfetti() {
-      for (let i = 0; i < 80; i++) {
-        const confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        confetti.style.animationDuration = Math.random() * 1.5 + 2 + "s";
-
-        document.body.appendChild(confetti);
-
-        setTimeout(() => confetti.remove(), 3000);
-      }
-    }
-
-    /* Slideshow Start */
-    function startSlideshow() {
-      slideshow.style.display = "block";
-      slideImg.src = photos[currentSlide];
-
-      setInterval(() => {
-        currentSlide = (currentSlide + 1) % photos.length;
-        slideImg.src = photos[currentSlide];
-      }, 2500);
-    }
-
-    /* ✅ YES Click */
-    yesBtn.addEventListener("click", () => {
-
-      /* Fade out question */
-      mainTitle.classList.add("fade-out");
-
-      /* After fade, replace text + fade back in */
-      setTimeout(() => {
-        mainTitle.innerHTML = "Happy Valentine’s Day Bubu ❤️🌹";
-        mainTitle.classList.remove("fade-out");
-      }, 800);
-
-      buttonBox.style.display = "none";
-
-      music.play().catch(() => {});
-
-      message.innerHTML = `
-        💖 YAYYY 🥰 <br><br>
-        I knew you couldn’t resist 😌❤️<br><br>
-        Congratulations… you unlocked <b>Unlimited Love</b> 🎁💘<br><br>
-        Now you owe me one Valentine date 😄🌹<br><br>
-        <span style="font-size:2rem;">Love you forever ❤️</span>
-      `;
-
-      launchConfetti();
-
-      typeText(slideTitle, "Here’s to our forever craziness... 💕");
-
-      startSlideshow();
-    });
-
-    /* ❌ NO Hover */
-    noBtn.addEventListener("mouseover", () => {
-      noMoves++;
-
-      /* Fade away after 4 moves */
-      if (noMoves >= 4) {
-        let fade = 1 - (noMoves - 4) / 6;
-        fade = Math.max(fade, 0);
-        noBtn.style.opacity = fade;
-      }
-
-      /* Gone after 10 */
-      if (noMoves >= 10) {
-        noBtn.style.display = "none";
-        return;
-      }
-
-      /* Grow YES (capped) */
-      if (yesSize < 3) {
-        yesSize += 0.2;
-        yesBtn.style.transform = `scale(${yesSize})`;
-      }
-
-      /* Move NO randomly */
-      const boxRect = buttonBox.getBoundingClientRect();
-      let newX = Math.random() * (boxRect.width - noBtn.offsetWidth);
-      let newY = Math.random() * (boxRect.height - noBtn.offsetHeight);
-
-      noBtn.style.left = newX + "px";
-      noBtn.style.top = newY + "px";
-    });
-
-    /* 💕 Floating Hearts */
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = "💗";
-
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 20 + "px";
-      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
-
-      document.body.appendChild(heart);
-
-      setTimeout(() => heart.remove(), 6000);
-    }
-
-    setInterval(createHeart, 400);
-  </script>
+  <!-- JS -->
+  <script src="script.js"></script>
 
 </body>
 </html>

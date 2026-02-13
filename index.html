@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Valentine for Harshada ❤️</title>
+  <title>Valentine for Harshu ❤️</title>
 
   <style>
     body {
@@ -16,21 +16,21 @@
       font-family: Arial, sans-serif;
       background: linear-gradient(to bottom, #ffb6c1, #ffe6f0);
       overflow: hidden;
+      text-align: center;
     }
 
     h1 {
       font-size: 2.5rem;
       color: white;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
-      text-align: center;
       padding: 0 20px;
     }
 
     .buttons {
       margin-top: 30px;
       position: relative;
-      width: 320px;
-      height: 220px;
+      width: 340px;
+      height: 230px;
     }
 
     button {
@@ -46,17 +46,19 @@
     #yesBtn {
       background: #ff2e63;
       color: white;
-      left: 60px;
+      left: 70px;
       top: 90px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      z-index: 2;
     }
 
     #noBtn {
       background: white;
       color: black;
-      left: 190px;
+      left: 200px;
       top: 90px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      z-index: 3;
     }
 
     #message {
@@ -65,11 +67,50 @@
       color: white;
       font-weight: bold;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.2);
-      text-align: center;
       padding: 0 20px;
+      max-width: 700px;
     }
 
-    /* 💕 Floating Hearts */
+    /* Slideshow */
+    #slideshow {
+      margin-top: 30px;
+      display: none;
+    }
+
+    #slideTitle {
+      font-size: 1.8rem;
+      color: white;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+      font-weight: bold;
+      min-height: 40px;
+    }
+
+    #slideshow img {
+      width: 280px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      animation: fade 1s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Ending Text */
+    #finalText {
+      margin-top: 20px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.25);
+      display: none;
+    }
+
+    /* Floating Hearts */
     .heart {
       position: absolute;
       bottom: -20px;
@@ -79,12 +120,23 @@
     }
 
     @keyframes floatUp {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-110vh);
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    /* Confetti Pieces */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: 0;
+      opacity: 0.9;
+      animation: fall 2.5s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
         opacity: 0;
       }
     }
@@ -101,338 +153,161 @@
   </div>
 
   <p id="message"></p>
-  <!-- FOURTH TRY -->
+
+  <!-- Slideshow -->
+  <div id="slideshow">
+    <h2 id="slideTitle"></h2>
+    <img id="slideImg" src="" alt="Memories ❤️">
+  </div>
+
+  <!-- Final Ending -->
+  <div id="finalText">Happy Valentine’s Day Bubu ❤️🌹</div>
+
   <script>
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const message = document.getElementById("message");
     const buttonBox = document.querySelector(".buttons");
-  
+
+    const slideshow = document.getElementById("slideshow");
+    const slideImg = document.getElementById("slideImg");
+    const slideTitle = document.getElementById("slideTitle");
+    const finalText = document.getElementById("finalText");
+
     let yesSize = 1;
     let noMoves = 0;
-  
-    // 🎵 Background Music
-    const music = new Audio(
-      "https://www.bensound.com/bensound-music/bensound-romantic.mp3"
-    );
+
+    /* 🎵 Music */
+    const music = new Audio("assets/music/love.mp3");
     music.loop = true;
-  
-    // Start music only after interaction
-    function startMusic() {
-      music.play().catch(() => {});
-      document.removeEventListener("click", startMusic);
+
+    /* 📸 Photos */
+    const photos = [
+      "assets/photos/pic1.jpg",
+      "assets/photos/pic2.jpg",
+      "assets/photos/pic3.jpg",
+      "assets/photos/pic4.jpg",
+      "assets/photos/pic5.jpg",
+      "assets/photos/pic6.jpg",
+      "assets/photos/pic7.jpg",
+      "assets/photos/pic8.jpg"
+    ];
+
+    let currentSlide = 0;
+
+    /* ✨ Typing Animation */
+    function typeText(element, text, speed = 70) {
+      element.innerHTML = "";
+      let i = 0;
+
+      function typing() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(typing, speed);
+        }
+      }
+      typing();
     }
-    document.addEventListener("click", startMusic);
-  
-    // ✅ YES click → Romantic + Funny Ending
+
+    /* 🎉 Confetti Burst */
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        confetti.style.animationDuration = Math.random() * 1.5 + 2 + "s";
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    /* Slideshow Start */
+    function startSlideshow() {
+      slideshow.style.display = "block";
+      slideImg.src = photos[currentSlide];
+
+      setInterval(() => {
+        currentSlide = (currentSlide + 1) % photos.length;
+        slideImg.src = photos[currentSlide];
+      }, 2500);
+
+      /* Show final ending after a few seconds */
+      setTimeout(() => {
+        finalText.style.display = "block";
+      }, 6000);
+    }
+
+    /* YES Click */
     yesBtn.addEventListener("click", () => {
       buttonBox.style.display = "none";
-  
+
+      music.play().catch(() => {});
+
       message.innerHTML = `
-        💖 YAYYY Harshada 🥰 <br><br>
+        💖 YAYYY  🥰 <br><br>
         I knew you couldn’t resist 😌❤️<br><br>
         Congratulations… you unlocked <b>Unlimited Love</b> 🎁💘<br><br>
         Now you owe me one Valentine date 😄🌹<br><br>
         <span style="font-size:2rem;">Love you forever ❤️</span>
       `;
+
+      launchConfetti();
+
+      typeText(slideTitle, "Here’s to our forever craziness... 💕");
+
+      startSlideshow();
     });
-  
-    // Helper function: overlap check
-    function isOverlapping(rect1, rect2) {
-      return !(
-        rect1.right < rect2.left ||
-        rect1.left > rect2.right ||
-        rect1.bottom < rect2.top ||
-        rect1.top > rect2.bottom
-      );
-    }
-  
-    // ✅ NO hover → moves away + fades out gradually
+
+    /* NO Hover */
     noBtn.addEventListener("mouseover", () => {
-  noMoves++;
+      noMoves++;
 
-  // Fade logic: after 4 moves, start disappearing
-  if (noMoves >= 4) {
-    let fadeFactor = 1 - (noMoves - 4) / 6; // 4→1, 10→0
-    fadeFactor = Math.max(fadeFactor, 0);
-    noBtn.style.opacity = fadeFactor;
-  }
-
-  // Fully gone by 10 moves
-  if (noMoves >= 10) {
-    noBtn.style.display = "none";
-    return;
-  }
-
-  // Limit YES growth so it doesn't become infinite
-  if (yesSize < 3) {
-    yesSize += 0.2;
-    yesBtn.style.transform = `scale(${yesSize})`;
-  }
-
-  // Move NO button safely
-  const boxRect = buttonBox.getBoundingClientRect();
-  const yesRect = yesBtn.getBoundingClientRect();
-
-  let newX, newY;
-  let futureRect;
-  let attempts = 0;
-
-  do {
-    newX = Math.random() * (boxRect.width - noBtn.offsetWidth);
-    newY = Math.random() * (boxRect.height - noBtn.offsetHeight);
-
-    // Define futureRect OUTSIDE properly
-    futureRect = {
-      left: boxRect.left + newX,
-      top: boxRect.top + newY,
-      right: boxRect.left + newX + noBtn.offsetWidth,
-      bottom: boxRect.top + newY + noBtn.offsetHeight
-    };
-
-    attempts++;
-
-    // Escape hatch if too many tries
-    if (attempts > 30) break;
-
-  } while (isOverlapping(futureRect, yesRect));
-
-  // Apply movement
-  noBtn.style.left = newX + "px";
-  noBtn.style.top = newY + "px";
-});
-
-  
-    // 💕 Floating hearts generator
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = "💗";
-  
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 20 + "px";
-      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
-  
-      document.body.appendChild(heart);
-  
-      setTimeout(() => heart.remove(), 6000);
-    }
-  
-    setInterval(createHeart, 400);
-  </script>
-  
-  
-
-
-
-  <!-- THIRD TRY -->
-  <!-- <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-    const buttonBox = document.querySelector(".buttons");
-  
-    let yesSize = 1;
-  
-    // ✅ Romantic + Funny Ending Screen
-    yesBtn.addEventListener("click", () => {
-      document.body.innerHTML = `
-        <div style="
-          text-align:center;
-          color:white;
-          font-family:Arial;
-          padding:40px;
-        ">
-          <h1 style="font-size:3rem;">YAYYY Harshada 💖🥰</h1>
-  
-          <p style="font-size:1.8rem; margin-top:20px;">
-            I knew you couldn’t resist 😌❤️
-          </p>
-  
-          <p style="font-size:1.5rem; margin-top:15px;">
-            Congratulations... you have officially unlocked
-            <b>Unlimited Love</b> 🎁💘
-          </p>
-  
-          <p style="font-size:1.4rem; margin-top:25px;">
-            Now you owe me one Valentine date 😄🌹
-          </p>
-  
-          <h2 style="margin-top:40px;">Love you forever ❤️</h2>
-        </div>
-      `;
-    });
-  
-    // ✅ NO button runs away without ever touching YES
-    noBtn.addEventListener("mouseover", () => {
-      const boxRect = buttonBox.getBoundingClientRect();
-      const yesRect = yesBtn.getBoundingClientRect();
-  
-      let newX, newY;
-      let safe = false;
-  
-      while (!safe) {
-        // Random position inside button box
-        newX = Math.random() * (boxRect.width - noBtn.offsetWidth);
-        newY = Math.random() * (boxRect.height - noBtn.offsetHeight);
-  
-        // Predict new No button area
-        const noFutureRect = {
-          left: boxRect.left + newX,
-          top: boxRect.top + newY,
-          right: boxRect.left + newX + noBtn.offsetWidth,
-          bottom: boxRect.top + newY + noBtn.offsetHeight
-        };
-  
-        // Check overlap with YES button
-        const overlap =
-          noFutureRect.left < yesRect.right &&
-          noFutureRect.right > yesRect.left &&
-          noFutureRect.top < yesRect.bottom &&
-          noFutureRect.bottom > yesRect.top;
-  
-        if (!overlap) safe = true;
+      if (noMoves >= 4) {
+        let fade = 1 - (noMoves - 4) / 6;
+        fade = Math.max(fade, 0);
+        noBtn.style.opacity = fade;
       }
-  
-      // Move NO button safely
+
+      if (noMoves >= 10) {
+        noBtn.style.display = "none";
+        return;
+      }
+
+      if (yesSize < 3) {
+        yesSize += 0.2;
+        yesBtn.style.transform = `scale(${yesSize})`;
+      }
+
+      const boxRect = buttonBox.getBoundingClientRect();
+      let newX = Math.random() * (boxRect.width - noBtn.offsetWidth);
+      let newY = Math.random() * (boxRect.height - noBtn.offsetHeight);
+
       noBtn.style.left = newX + "px";
       noBtn.style.top = newY + "px";
-  
-      // Grow YES button
-      yesSize += 0.25;
-      yesBtn.style.transform = `scale(${yesSize})`;
     });
-  
-    // 💕 Floating hearts generator
+
+    /* Floating Hearts */
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerHTML = "💗";
-  
+
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.fontSize = Math.random() * 20 + 20 + "px";
       heart.style.animationDuration = Math.random() * 3 + 4 + "s";
-  
+
       document.body.appendChild(heart);
-  
+
       setTimeout(() => heart.remove(), 6000);
     }
-  
-    setInterval(createHeart, 400);
-  </script> -->
-  
-  <!-- THIRD TRY -->
-
-  <!-- SECOND TRY -->
-  <!-- <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-    const buttonBox = document.querySelector(".buttons");
-  
-    let yesSize = 1;
-  
-    // ✅ YES click → hide buttons + show message clearly
-    yesBtn.addEventListener("click", () => {
-      message.innerHTML =
-        "YAYYYY 💖🥰<br>Harshada, you just made me the happiest person ❤️";
-  
-      // Hide buttons after Yes
-      buttonBox.style.display = "none";
-    });
-  
-    // Helper: get distance between two points
-    function distance(x1, y1, x2, y2) {
-      return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-    }
-  
-    // ✅ NO hover → runs away but avoids YES
-    noBtn.addEventListener("mouseover", () => {
-      let randomX, randomY;
-  
-      // Get Yes button position
-      const yesRect = yesBtn.getBoundingClientRect();
-  
-      do {
-        randomX = Math.floor(Math.random() * 220);
-        randomY = Math.floor(Math.random() * 160);
-  
-        // Distance check so it doesn't land too close
-      } while (distance(randomX, randomY, 60, 90) < 80);
-  
-      noBtn.style.left = randomX + "px";
-      noBtn.style.top = randomY + "px";
-  
-      // Grow YES button
-      yesSize += 0.25;
-      yesBtn.style.transform = `scale(${yesSize})`;
-    });
-  
-    // 💕 Floating hearts generator
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = "💗";
-  
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 20 + "px";
-      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
-  
-      document.body.appendChild(heart);
-  
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
-    }
-  
-    setInterval(createHeart, 400);
-  </script> -->
-  
-  <!-- FIRST TRY -->
-  <!-- <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-
-    let yesSize = 1;
-
-    // YES click
-    yesBtn.addEventListener("click", () => {
-      message.innerHTML =
-        "YAYYYY 💖🥰<br>Harshada, you just made me the happiest person ❤️";
-    });
-
-    // NO hover → runs away + YES grows
-    noBtn.addEventListener("mouseover", () => {
-      const randomX = Math.floor(Math.random() * 220);
-      const randomY = Math.floor(Math.random() * 160);
-
-      noBtn.style.left = randomX + "px";
-      noBtn.style.top = randomY + "px";
-
-      yesSize += 0.25;
-      yesBtn.style.transform = `scale(${yesSize})`;
-    });
-
-    // 💕 Floating hearts generator
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = "💗";
-
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 20 + "px";
-      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
-
-      document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
-    }
 
     setInterval(createHeart, 400);
-  </script> -->
+  </script>
 
 </body>
 </html>

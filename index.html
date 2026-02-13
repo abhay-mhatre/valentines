@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Valentine for Harshu ❤️</title>
+  <title>Valentine for Harshada ❤️</title>
 
   <style>
     body {
@@ -19,11 +19,18 @@
       text-align: center;
     }
 
+    /* Main Title */
     h1 {
       font-size: 2.5rem;
       color: white;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
       padding: 0 20px;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Fade helper class */
+    .fade-out {
+      opacity: 0;
     }
 
     .buttons {
@@ -100,16 +107,6 @@
       to   { opacity: 1; }
     }
 
-    /* Ending Text */
-    #finalText {
-      margin-top: 20px;
-      font-size: 2rem;
-      font-weight: bold;
-      color: white;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.25);
-      display: none;
-    }
-
     /* Floating Hearts */
     .heart {
       position: absolute;
@@ -124,7 +121,7 @@
       100% { transform: translateY(-110vh); opacity: 0; }
     }
 
-    /* Confetti Pieces */
+    /* Confetti */
     .confetti {
       position: absolute;
       width: 10px;
@@ -145,13 +142,16 @@
 
 <body>
 
-  <h1>Harshu ❤️<br>Will you be my Valentine?</h1>
+  <!-- Main Title -->
+  <h1 id="mainTitle">Harshada ❤️<br>Will you be my Valentine?</h1>
 
+  <!-- Buttons -->
   <div class="buttons">
     <button id="yesBtn">Yes</button>
     <button id="noBtn">No</button>
   </div>
 
+  <!-- Message -->
   <p id="message"></p>
 
   <!-- Slideshow -->
@@ -160,10 +160,9 @@
     <img id="slideImg" src="" alt="Memories ❤️">
   </div>
 
-  <!-- Final Ending -->
-  <div id="finalText">Happy Valentine’s Day Bubu ❤️🌹</div>
-
   <script>
+    const mainTitle = document.getElementById("mainTitle");
+
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const message = document.getElementById("message");
@@ -172,7 +171,6 @@
     const slideshow = document.getElementById("slideshow");
     const slideImg = document.getElementById("slideImg");
     const slideTitle = document.getElementById("slideTitle");
-    const finalText = document.getElementById("finalText");
 
     let yesSize = 1;
     let noMoves = 0;
@@ -235,21 +233,26 @@
         currentSlide = (currentSlide + 1) % photos.length;
         slideImg.src = photos[currentSlide];
       }, 2500);
-
-      /* Show final ending after a few seconds */
-      setTimeout(() => {
-        finalText.style.display = "block";
-      }, 6000);
     }
 
-    /* YES Click */
+    /* ✅ YES Click */
     yesBtn.addEventListener("click", () => {
+
+      /* Fade out question */
+      mainTitle.classList.add("fade-out");
+
+      /* After fade, replace text + fade back in */
+      setTimeout(() => {
+        mainTitle.innerHTML = "Happy Valentine’s Day Harshada ❤️🌹";
+        mainTitle.classList.remove("fade-out");
+      }, 800);
+
       buttonBox.style.display = "none";
 
       music.play().catch(() => {});
 
       message.innerHTML = `
-        💖 YAYYY  🥰 <br><br>
+        💖 YAYYY Harshada 🥰 <br><br>
         I knew you couldn’t resist 😌❤️<br><br>
         Congratulations… you unlocked <b>Unlimited Love</b> 🎁💘<br><br>
         Now you owe me one Valentine date 😄🌹<br><br>
@@ -263,26 +266,30 @@
       startSlideshow();
     });
 
-    /* NO Hover */
+    /* ❌ NO Hover */
     noBtn.addEventListener("mouseover", () => {
       noMoves++;
 
+      /* Fade away after 4 moves */
       if (noMoves >= 4) {
         let fade = 1 - (noMoves - 4) / 6;
         fade = Math.max(fade, 0);
         noBtn.style.opacity = fade;
       }
 
+      /* Gone after 10 */
       if (noMoves >= 10) {
         noBtn.style.display = "none";
         return;
       }
 
+      /* Grow YES (capped) */
       if (yesSize < 3) {
         yesSize += 0.2;
         yesBtn.style.transform = `scale(${yesSize})`;
       }
 
+      /* Move NO randomly */
       const boxRect = buttonBox.getBoundingClientRect();
       let newX = Math.random() * (boxRect.width - noBtn.offsetWidth);
       let newY = Math.random() * (boxRect.height - noBtn.offsetHeight);
@@ -291,7 +298,7 @@
       noBtn.style.top = newY + "px";
     });
 
-    /* Floating Hearts */
+    /* 💕 Floating Hearts */
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");

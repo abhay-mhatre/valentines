@@ -19,7 +19,12 @@ const music = new Audio("assets/music/love.mp3");
 const photos = [
   "assets/photos/pic1.jpg",
   "assets/photos/pic2.jpg",
-  "assets/photos/pic3.jpg"
+  "assets/photos/pic3.jpg",
+  "assets/photos/pic4.jpg",
+  "assets/photos/pic5.jpg",
+  "assets/photos/pic6.jpg",
+  "assets/photos/pic7.jpg",
+  "assets/photos/pic8.jpg"
 ];
 
 let currentPhoto = 0;
